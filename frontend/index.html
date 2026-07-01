@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataGuard AI — Sensitive Data Detection</title>
+  <meta name="description" content="Upload documents, detect sensitive data, and assess compliance risk with AI." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Sidebar ────────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚔️</span>
+      <div>
+        <div class="brand-name">DataGuard AI</div>
+        <div class="brand-sub">Compliance Assistant</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#home"      class="nav-link active" data-page="home">
+        <span class="nav-icon">⊞</span> Home
+      </a>
+      <a href="#upload"    class="nav-link" data-page="upload">
+        <span class="nav-icon">↑</span> Upload
+      </a>
+      <a href="#detection" class="nav-link" data-page="detection">
+        <span class="nav-icon">◎</span> Detection
+      </a>
+      <a href="#dashboard" class="nav-link" data-page="dashboard">
+        <span class="nav-icon">◫</span> Dashboard
+      </a>
+      <a href="#qa"        class="nav-link" data-page="qa">
+        <span class="nav-icon">◌</span> Ask AI
+      </a>
+      <a href="#reports"   class="nav-link" data-page="reports">
+        <span class="nav-icon">≡</span> Reports
+      </a>
+      <a href="#audit"     class="nav-link" data-page="audit">
+        <span class="nav-icon">⧖</span> Audit Log
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-section-label">Groq API Key</div>
+      <input
+        type="password"
+        id="api-key-input"
+        class="api-key-input"
+        placeholder="gsk_… (optional)"
+        autocomplete="off"
+      />
+      <div id="ai-status" class="ai-status offline">AI: offline</div>
+      <div class="sidebar-section-label" style="margin-top:1rem;">Session</div>
+      <div id="session-stats" class="session-stats">0 documents · 0 scans</div>
+    </div>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Home -->
+    <section id="page-home" class="page active">
+      <div class="page-hero">
+        <div class="hero-tag">Built for Proteccio Data Internship</div>
+        <h1 class="hero-title">Sensitive Data Detection<br>&amp; Compliance Assistant</h1>
+        <p class="hero-desc">
+          Upload a document. Detect sensitive information instantly.
+          Understand your compliance risk — mapped to the India DPDP Act 2023 and GDPR.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="navigate('upload')">Start analysis</button>
+          <button class="btn btn-outline" onclick="navigate('audit')">View audit log</button>
+        </div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📤</div>
+          <div class="feature-title">Multi-format upload</div>
+          <div class="feature-desc">PDF, TXT, CSV, DOCX with OCR for scanned pages</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-title">20+ detection patterns</div>
+          <div class="feature-desc">Aadhaar, PAN, Credit Cards, API keys, IFSC, GST and more</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚖️</div>
+          <div class="feature-title">Compliance mapping</div>
+          <div class="feature-desc">Findings mapped to DPDP Act 2023 and GDPR articles</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title">AI Q&amp;A</div>
+          <div class="feature-desc">Groq Llama 3.1 answers questions grounded in document content via RAG</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎭</div>
+          <div class="feature-title">Data redaction</div>
+          <div class="feature-desc">Download sanitized documents with PII fully or partially masked</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <div class="feature-title">Audit trail</div>
+          <div class="feature-desc">Every action logged to SQLite for regulatory compliance</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upload -->
+    <section id="page-upload" class="page">
+      <div class="page-header">
+        <h1>Upload Document</h1>
+        <p>Supports PDF, TXT, CSV and DOCX. All processing happens locally.</p>
+      </div>
+
+      <div class="upload-area" id="upload-dropzone">
+        <div class="upload-icon">↑</div>
+        <div class="upload-text">Drop file here or <span class="upload-link">click to browse</span></div>
+        <div class="upload-hint">PDF · TXT · CSV · DOCX — up to 50 MB</div>
+        <input type="file" id="file-input" accept=".pdf,.txt,.csv,.docx" hidden />
+      </div>
+
+      <div class="upload-options">
+        <label class="option-label">
+          <input type="checkbox" id="use-ocr" />
+          <span>Enable OCR for scanned PDFs</span>
+        </label>
+      </div>
+
+      <div class="row" style="gap:0.5rem; margin:1rem 0; justify-content: flex-end;">
+        <button class="btn btn-ghost btn-sm" onclick="clearDocuments()">Clear all</button>
+      </div>
+
+      <!-- Progress -->
+      <div id="upload-progress" class="upload-progress hidden">
+        <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+        <div class="progress-label" id="progress-label">Processing…</div>
+      </div>
+
+      <!-- Document list -->
+      <div id="doc-list-section" class="hidden">
+        <div class="section-label">Analyzed documents</div>
+        <div id="doc-list"></div>
+
+        <!-- Selected doc stats -->
+        <div id="doc-stats" class="hidden">
+          <div class="section-label" style="margin-top:1.25rem;">Results</div>
+          <div id="stat-strip" class="stat-strip"></div>
+          <div id="risk-banner" class="risk-banner"></div>
+          <div class="row" style="gap:0.5rem; margin-top:1rem;">
+            <button class="btn btn-primary btn-sm" onclick="navigate('detection')">View detections</button>
+            <button class="btn btn-outline btn-sm" onclick="navigate('dashboard')">Dashboard</button>
+            <button class="btn btn-outline btn-sm" onclick="navigate('qa')">Ask AI</button>
+            <button class="btn btn-outline btn-sm" onclick="navigate('reports')">Report</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detection -->
+    <section id="page-detection" class="page">
+      <div class="page-header">
+        <h1>Detection Results</h1>
+        <p>All sensitive data found in the document.</p>
+      </div>
+      <div id="detection-doc-selector" class="hidden">
+        <select id="detection-doc-select" class="select"></select>
+      </div>
+      <div id="detection-content">
+        <div class="empty-state">No documents analyzed yet. <a href="#upload" onclick="navigate('upload')">Upload one →</a></div>
+      </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="page-dashboard" class="page">
+      <div class="page-header">
+        <h1>Risk Dashboard</h1>
+        <p>Visual breakdown of detection results and compliance exposure.</p>
+      </div>
+      <div id="dashboard-doc-selector" class="hidden">
+        <select id="dashboard-doc-select" class="select"></select>
+      </div>
+      <div id="dashboard-content">
+        <div class="empty-state">No documents analyzed yet. <a href="#upload" onclick="navigate('upload')">Upload one →</a></div>
+      </div>
+    </section>
+
+    <!-- QA -->
+    <section id="page-qa" class="page">
+      <div class="page-header">
+        <h1>Ask AI</h1>
+        <p>Ask questions about your document. Answers are grounded via RAG.</p>
+      </div>
+      <div id="qa-doc-selector" class="hidden">
+        <select id="qa-doc-select" class="select"></select>
+      </div>
+      <div id="qa-content">
+        <div class="empty-state">No documents analyzed yet. <a href="#upload" onclick="navigate('upload')">Upload one →</a></div>
+      </div>
+    </section>
+
+    <!-- Reports -->
+    <section id="page-reports" class="page">
+      <div class="page-header">
+        <h1>Compliance Report</h1>
+        <p>AI-generated compliance observations, security risks, and remediation steps.</p>
+      </div>
+      <div id="reports-doc-selector" class="hidden">
+        <select id="reports-doc-select" class="select"></select>
+      </div>
+      <div id="reports-content">
+        <div class="empty-state">No documents analyzed yet. <a href="#upload" onclick="navigate('upload')">Upload one →</a></div>
+      </div>
+    </section>
+
+    <!-- Audit -->
+    <section id="page-audit" class="page">
+      <div class="page-header">
+        <h1>Audit Log</h1>
+        <p>Complete record of all system events for regulatory tracking.</p>
+      </div>
+      <div id="audit-content">
+        <div class="empty-state">Loading audit log…</div>
+      </div>
+    </section>
+
+  </main>
+</div><!-- .shell -->
+
+<!-- Toast notification -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
