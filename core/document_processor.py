@@ -52,10 +52,23 @@ class DocumentProcessor:
 
         try:
             import pytesseract
-            pytesseract.get_tesseract_version()
-            self._has_tesseract = True
-        except Exception:
-            logger.warning("Tesseract not available. OCR support disabled.")
+            # Check if tesseract is in PATH, if not try standard location
+            try:
+                pytesseract.get_tesseract_version()
+                self._has_tesseract = True
+            except Exception:
+                standard_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+                if os.path.exists(standard_path):
+                    pytesseract.pytesseract.tesseract_cmd = standard_path
+                    try:
+                        pytesseract.get_tesseract_version()
+                        self._has_tesseract = True
+                    except Exception:
+                        logger.warning("Tesseract found at C:\\Program Files\\Tesseract-OCR but failed to load.")
+                else:
+                    logger.warning("Tesseract not available. OCR support disabled.")
+        except ImportError:
+            logger.warning("pytesseract package not installed. OCR support disabled.")
 
     def process(self, file_obj, filename: str) -> dict:
         """
