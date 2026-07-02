@@ -197,9 +197,7 @@ User Query → Sentence Embedding (all-MiniLM-L6-v2)
 
 ---
 
-## 📜 License
 
-MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
