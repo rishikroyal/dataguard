@@ -120,7 +120,14 @@ Keep the tone professional, specific, and actionable. Reference actual regulatio
                 temperature=0.4,
                 max_tokens=2048,
             )
-            return completion.choices[0].message.content
+            ans_text = completion.choices[0].message.content
+            if dets_list:
+                for det in dets_list:
+                    raw_val = det.get("value")
+                    masked_val = det.get("masked_value")
+                    if raw_val and masked_val and len(raw_val) >= 4:
+                        ans_text = ans_text.replace(raw_val, masked_val)
+            return ans_text
         except Exception as e:
             logger.error(f"Groq API error: {e}")
             return self._rule_based_summary(dets_list, rp_dict, filename)
@@ -186,7 +193,14 @@ Answer the question precisely and professionally.
                 temperature=0.4,
                 max_tokens=1024,
             )
-            return completion.choices[0].message.content
+            ans_text = completion.choices[0].message.content
+            if dets_list:
+                for det in dets_list:
+                    raw_val = det.get("value")
+                    masked_val = det.get("masked_value")
+                    if raw_val and masked_val and len(raw_val) >= 4:
+                        ans_text = ans_text.replace(raw_val, masked_val)
+            return ans_text
         except Exception as e:
             logger.error(f"Groq Q&A error: {e}")
             return self._rule_based_qa(question, dets_list, rp_dict)
