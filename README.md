@@ -2,7 +2,8 @@
 ### Enterprise-Grade Sensitive Data Detection & Compliance Assistant
 
 > **Internship Challenge Submission**: Developed for the *Proteccio Data AI Innovation Internship Challenge* (July 2026).  
-> 🔗 **Live Working Prototype**: [https://dataguard-ai.onrender.com](https://dataguard-ai.onrender.com)
+> 🔗 **Live Working Prototype**: [https://dataguard-ai.onrender.com](https://dataguard-ai.onrender.com)  
+> ⚠️ *Note: Render free tier resources are near exhaustion. If the live instance is slow to respond or spinning up, please consider this hosting limitation or deploy it locally using the Docker instructions below.*
 
 ---
 
