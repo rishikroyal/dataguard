@@ -262,7 +262,7 @@ Answer the question precisely and professionally.
         lines.extend([
             "",
             "---",
-            "*⚠️ To enable AI-powered analysis, configure your Groq API key in the sidebar.*",
+            "*⚠️ To enable AI-powered analysis, configure the GROQ_API_KEY environment variable in your backend environment.*",
         ])
 
         return "\n".join(lines)
@@ -309,10 +309,9 @@ Answer the question precisely and professionally.
         elif any(word in q_lower for word in ["remediation", "fix", "action", "recommend"]):
             steps = "\n".join(f"{i+1}. {s}" for i, s in enumerate(risk_profile.get("remediation_steps", [])[:5]))
             return f"**Recommended Actions:**\n{steps}"
-
         else:
             return (
                 f"I found **{risk_profile.get('total_detections', 0)}** sensitive data items in this document "
                 f"(Risk Level: **{risk_profile.get('overall_risk', 'LOW')}**). "
-                f"For more specific AI-powered answers, please configure your Groq API key in the sidebar."
+                f"For more specific AI-powered answers, please configure the GROQ_API_KEY environment variable in your backend environment."
             )
