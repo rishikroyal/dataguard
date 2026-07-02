@@ -1,224 +1,167 @@
-<div align="center">
-
 # ⚔️ DataGuard AI
-### Sensitive Data Detection & Compliance Assistant
+### Enterprise-Grade Sensitive Data Detection & Compliance Assistant
 
-
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688?logo=fastapi)](https://fastapi.tiangolo.com)
-[![Groq](https://img.shields.io/badge/Groq-Llama--3.1--8b--instant-orange)](https://groq.com)
-[![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG%20Pipeline-orange)](https://www.trychroma.com)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://docker.com)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
-</div>
+> **Internship Challenge Submission**: Developed for the *Proteccio Data AI Innovation Internship Challenge* (July 2026).  
+> 🔗 **Live Working Prototype**: [https://dataguard-ai.onrender.com](https://dataguard-ai.onrender.com)
 
 ---
 
-## 📌 Overview
+## 📌 Executive Summary
 
-**DataGuard AI** is a secure, high-performance web application designed to detect sensitive/confidential information in uploaded documents, classify overall compliance risk, map violations to modern frameworks (India DPDP Act 2023 & GDPR), and provide an interactive RAG (Retrieval-Augmented Generation) Q&A console.
+**DataGuard AI** is a secure, high-performance web application designed to scan enterprise documents, identify sensitive information (PII, Financials, Credentials), map compliance violations to regulatory frameworks (India DPDP Act 2023 & EU GDPR), and facilitate secure, context-grounded Q&A over the documents without leaking confidential details.
 
-The application features a clean, professional, and minimalist human-designed black-and-white theme, combining a lightweight **Vanilla HTML/JS Single Page Application (SPA)** with a high-performance **FastAPI backend** running on a unified port.
-
-> **This is not a minimum-viable product.** It is designed to demonstrate production-grade software architecture, advanced NLP detection, active regex filtering validators, and robust AI privacy controls.
+This project was built to demonstrate **production-grade engineering depth**, moving far beyond a minimum viable product. It showcases a modern **FastAPI backend** paired with a minimalist, high-fidelity **Vanilla HTML/CSS/JS Single Page Application (SPA)**, active regex heuristics with deterministic validators, local semantic embeddings with vector databases (RAG), and secure LLM post-processing.
 
 ---
 
-## ✨ Key Features
+## 🏗️ Architecture & System Design
 
-| Feature | Details |
-|---------|---------|
-| 📤 **Multi-format Upload** | PDF, TXT, CSV, DOCX text extraction with automated OCR fallback |
-| 🔍 **20+ Detection Patterns** | Aadhaar, PAN, Credit Cards, API Keys, Passwords, Bank Details, GST, IFSC, UPI, Passports, and more |
-| ✅ **Smart Validation** | Luhn algorithm validation, Aadhaar digit constraints, and SWIFT/BIC ISO country code validation to eliminate false positives on uppercase last names |
-| 📊 **4-Level Risk Classification** | CRITICAL / HIGH / MEDIUM / LOW using a custom priority-based taxonomy |
-| ⚖️ **Compliance Mapping** | Section mappings to India DPDP Act 2023 & EU GDPR Articles |
-| 🤖 **AI-Powered Analysis** | Groq (`llama-3.1-8b-instant`) for secure compliance summaries and Q&A (requires `gsk_` key) |
-| 💬 **RAG Q&A Console** | ChromaDB + sentence-transformers for localized document context Q&A |
-| 🛡️ **Privacy Masking** | System-enforced AI response filtering to guarantee that unmasked PII values never leak in chat |
-| 🎭 **Data Redaction** | Fully interactive Redaction tab supporting Full / Partial / Hash redactions |
-| 📑 **PDF Reports** | Downloadable professional compliance reports compiled via ReportLab |
-| 📋 **Audit Log Ledger** | SQLite-backed timeline ledger with dynamic search filters |
-| 🐳 **Docker Deployment** | Dockerfile and compose file for one-command deployment |
-
----
-
-## 🚀 Setup Instructions
-
-### Prerequisites
-
-- Python 3.9 or higher
-- pip
-- (Optional) Groq API Key — [get your API key here](https://console.groq.com/)
-- (Optional) Tesseract OCR — for scanned image/PDF OCR fallback
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/rishikroyal/dataguard.git
-cd dataguard
-```
-
-### 2. Create Virtual Environment
-
-```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS/Linux
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-> **Note:** The spaCy `en_core_web_sm` model will be downloaded automatically during package installation. If it fails, run: `python -m spacy download en_core_web_sm`
-
-### 4. Configure Environment
-
-Rename `.env.example` to `.env` and configure your credentials:
-
-```bash
-cp .env.example .env
-```
-
-```env
-GROQ_API_KEY=gsk_your_groq_key_here
-```
-
-### 5. Run the Application
-
-Start the FastAPI application server:
-
-```bash
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
-Open your browser at **`http://localhost:8000`**
-
----
-
-### 🐳 Docker Deployment
-
-```bash
-# Build and run with Docker Compose
-docker-compose up --build
-
-# Or run directly via Docker CLI
-docker build -t dataguard-ai .
-docker run -p 8000:8000 -e GROQ_API_KEY=gsk_key dataguard-ai
-```
-
----
-
-### 🌐 Deploying to Render (Recommended)
-
-Since this project already contains a configured `Dockerfile` that automatically handles Tesseract OCR and system libraries, deploying via **Docker** on [Render](https://render.com/) is the easiest and most reliable method:
-
-1. **Push your code** to your GitHub repository (e.g. `https://github.com/rishikroyal/dataguard`).
-2. **Log in to Render** and click **New +** -> **Web Service**.
-3. **Connect your repository** from GitHub.
-4. **Configure Settings**:
-   * **Name**: `dataguard-ai`
-   * **Runtime**: Select **Docker** (Render will automatically detect the `Dockerfile` in the root).
-   * **Instance Type**: **Free** (or any tier).
-5. **Add Environment Variables**:
-   * Click on the **Advanced** section.
-   * Add a new environment variable:
-     * Key: `GROQ_API_KEY`
-     * Value: `gsk_your_actual_groq_key_here`
-6. Click **Deploy Web Service**. Render will build the container, install system dependencies, and deploy the application on a public URL.
-
----
-
-## 🏗️ Architecture Overview
+DataGuard AI utilizes a single-port, lightweight decoupled architecture where FastAPI serves both high-concurrency API endpoints and compiled static assets.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Vanilla HTML/JS Frontend                     │
-│         Minimalist B&W SPA · Real-time charts · Search Filters   │
+│      Minimalist black & white SPA · Real-time Plotly charts     │
 │                                                                 │
 │   Home  ·  Upload  ·  Detection  ·  Dashboard  ·  Q&A  ·  Audit  │
 └───────────────────────┬─────────────────────────────────────────┘
-                        │ API calls served on Port 8000
+                        │ HTTP APIs / JSON Responses
 ┌───────────────────────▼─────────────────────────────────────────┐
-│                      FastAPI Backend App                        │
-│         Router Layer · Static Asset Serving · SQLite Store       │
+│                    FastAPI Server App (Port 8000)               │
+│         Router Layer · Static Asset Serving · SQLite Ledger      │
 │                                                                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐  │
 │  │  Document    │  │  Detection   │  │  Risk Classifier      │  │
-│  │  Processor   │  │  Engine      │  │  Custom Priority-     │  │
-│  │  PDF/TXT/    │  │  20+ regex   │  │  Based Risk Model     │  │
-│  │  CSV/DOCX +  │  │  + spaCy NLP │  │  (DPDP + GDPR maps)   │  │
-│  │  Tesseract   │  │  Luhn Check  │  │                       │  │
+│  │  Processor   │  │  Engine      │  │  Rule-based priority  │  │
+│  │  PDF/TXT/    │  │  20+ Heuristics│  │  risk scoring matrix  │  │
+│  │  CSV/DOCX +  │  │  + spaCy NER │  │  (DPDP + GDPR maps)   │  │
+│  │  Tesseract   │  │  Luhn checks │  │                       │  │
 │  └──────────────┘  └──────────────┘  └───────────────────────┘  │
 │                                                                 │
 │  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────┐  │
 │  │  AI Engine   │  │  RAG Engine  │  │  Redactor             │  │
-│  │  Groq Llama  │  │  ChromaDB +  │  │  Full/Partial/Hash    │  │
-│  │  3.1 Flash   │  │  MiniLM-L6   │  │  HTML highlight       │  │
-│  │  + fallback  │  │  embeddings  │  │  Download export      │  │
+│  │  Groq Client │  │  ChromaDB +  │  │  Full / Partial /     │  │
+│  │  (Llama 3.1) │  │  MiniLM-L6   │  │  Hash Masking         │  │
+│  │  + Fallbacks │  │  vector index│  │  HTML highlight       │  │
 │  └──────────────┘  └──────────────┘  └───────────────────────┘  │
 │                                                                 │
 │  ┌──────────────┐  ┌────────────────────────────────────────┐    │
-│  │  Audit       │  │  Utils: PDF report generation,         │    │
+│  │  Audit       │  │  Utils: ReportLab PDF compiler,        │    │
 │  │  Logger      │  │  session management, export helpers    │    │
 │  │  (SQLite)    │  │                                         │    │
 │  └──────────────┘  └────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+### Technical Highlights of the Stack:
+* **Backend API**: **FastAPI** for asynchronous routing, request validation via Pydantic, and high throughput.
+* **Frontend SPA**: Written entirely in **Vanilla HTML5, Javascript (ES6+), and CSS3** (No heavy frontend build chains or frameworks like React/Next.js). It loads in milliseconds, communicates via asynchronous `fetch` calls, and renders clean layouts with a tailored, developer-first aesthetic.
+* **Database Ledger**: **SQLite** serves as a lightweight, transaction-safe audit logging ledger.
+* **Telemetry & Storage Isolation**: Completely offline by design. All parsing, document storage, and ledger logging run on local disks, keeping candidate files secure.
+
 ---
 
-## 🧠 AI/ML Approach
+## 🧠 AI/ML & Natural Language Processing Approach
 
-### 1. Sensitive Data Detection (Regex + NLP)
+The pipeline combines deterministic heuristics, machine learning classifiers, and generative AI to maximize precision and recall.
 
-* **Layer 1 — Regex Patterns:** 20+ fine-tuned patterns covering Aadhaar, PAN, Passports, Voter IDs, Credit Cards, GSTIN, IFSC, UPI, and technical configurations (API Keys, Passwords).
-* **Layer 2 — Hard Validation Filters:**
-  * **Luhn Algorithm Check** to validate credit cards.
-  * **Aadhaar rules** (must start 2-9 and pass checksum).
-  * **SWIFT ISO Country Code Validation**: Validates that characters 5 & 6 represent an official ISO-3166-1 country code (e.g. `IN`, `US`, `GB`). This prevents uppercase names (such as `UPPARAPALLI`) from triggering false positives.
-* **Layer 3 — spaCy Named Entity Recognition (NER)**: Evaluates named entities (`PERSON`, `ORG`) near pattern matches to dynamically adjust detection confidence.
+### 1. Multi-Layer Sensitive Data Detection
+* **Layer 1 — Regular Expressions**: 20+ custom-built regex patterns targeting identifiers such as Aadhaar cards, PAN cards, Passports, Driving Licences, Credit Cards (Visa, MC, Amex), GSTIN, IFSC, technical API Keys, and passwords.
+* **Layer 2 — Deterministic Validators**:
+  * **Luhn Algorithm Checksum** for verifying valid credit card numbers.
+  * **Aadhaar constraint check** (detects invalid starting digits and lengths).
+  * **SWIFT ISO Country Code Check**: Validates that characters 5 & 6 match official country codes (e.g. `IN`, `US`, `GB`). This prevents uppercase names (such as `UPPARAPALLI`) from triggering false positives.
+* **Layer 3 — NLP Context Boosting**: Uses a **spaCy** Named Entity Recognition (NER) model to locate surrounding context clues. If a pattern match is within 100 characters of an identified `PERSON` or `ORG` entity, the system boosts its confidence score.
 
-### 2. Custom Taxonomy Risk Classification
+### 2. Risk Classification Matrix
+Detections are scored via a weighted priority matrix:
+* **Critical**: Exposed credentials, API keys, passwords, or documents containing a combination of sensitive identifiers and financial data.
+* **High**: Plain-text PII (Aadhaar, Passport, PAN, Driving Licence).
+* **Medium**: Department/Ministry names, corporate contact details, or internal files.
+* **Low**: Public notice layouts, general reports, or public announcements.
 
-The engine uses a strict category priority risk model:
-* **🚨 Critical**: Passwords, API Keys, Encryption Keys, Digital Certificates, Military/Defense documents, or documents containing *both* a sensitive ID (Aadhaar, PAN, Passport, DL) and a credential.
-* **🔴 High**: Aadhaar, Passport, PAN, Driving Licence, Voter ID, Tax IDs, Government employee IDs, or internal documents containing "Internal".
-* **🟡 Medium**: Government employee details, department/ministry names, office addresses, or government-issued document references without PII.
-* **🟢 Low**: Public notices, public regulations, ministry press releases, or public government websites.
+### 3. Retrieval-Augmented Generation (RAG)
+For secure Q&A over uploaded files, we build a local vector database:
+1. **Document Chunking**: Text is split using paragraph-aware chunking with a size of 512 characters and a 64-character overlap.
+2. **Embeddings**: Vector embeddings are generated using the `sentence-transformers/all-MiniLM-L6-v2` model (384 dimensions).
+3. **Vector Database**: Chunks are indexed inside **ChromaDB**.
+4. **LLM Generation**: Similar chunks are retrieved and sent alongside the user prompt to **Groq (`llama-3.1-8b-instant`)**.
+5. **Fail-Safe Response Masking**: A backend filter post-processes the LLM's response. If any raw, unmasked sensitive data value (length $\ge$ 4) from the document is found in the generated answer, the backend instantly overrides it with its masked equivalent.
 
-### 3. RAG Pipeline (Q&A)
+---
 
+## ⚠️ Challenges Faced & Engineering Solutions
+
+### 1. Eliminating False Positives in Identifier Detection
+* **The Problem**: Standard patterns matching bank codes (like SWIFT/BIC) often match uppercase last names (e.g., `UPPARAPALLI` has exactly 11 letters, matching the SWIFT format, triggering false alarms).
+* **The Solution**: Implemented a custom validation checker that inspects the country identifier characters of the match. If it does not resolve to a valid ISO 3166-1 alpha-2 country code, the detection is instantly discarded.
+
+### 2. LLM Instruction Drift and PII Leakage
+* **The Problem**: Even with strict system prompts, smaller models (like Llama-3.1-8b) occasionally leak raw, unmasked data in conversational Q&A when asked direct questions.
+* **The Solution**: Developed a backend post-processing filter that intercepts the LLM's final response, compares it against the document's raw detections list, and automatically redacts any matched strings before serving the response to the user.
+
+### 3. Telemetry Library Version Conflict
+* **The Problem**: ChromaDB's telemetry pipeline had a method signature mismatch with the system's updated `posthog` package, triggering noisy console logs during startup.
+* **The Solution**: Disabled telemetry at the ChromaDB initialization layer using configuration settings (`Settings(anonymized_telemetry=False)`), improving startup speed and silencing console errors.
+
+---
+
+## 🚀 Setup Instructions
+
+### Local Setup (Native Python)
+
+#### 1. Clone & Navigate
+```bash
+git clone https://github.com/rishikroyal/dataguard.git
+cd dataguard
 ```
-User Query → Sentence Embedding (all-MiniLM-L6-v2)
-           → Cosine Similarity Search (ChromaDB)
-           → Top-K Relevant Document Chunks Retrieved
-           → System Prompt (Exclusion of unmasked PII values)
-           → Groq (llama-3.1-8b-instant LLM response)
-           → Answer rendered with local compliance fallback
+
+#### 2. Environment Configuration
+Create a virtual environment and install requirements:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+#### 3. Setup Env Variables
+Create a `.env` file in the root folder:
+```env
+GROQ_API_KEY=gsk_your_groq_api_key_here
+```
+
+#### 4. Run Server
+```bash
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+```
+Open **`http://localhost:8000`** in your browser.
+
+---
+
+### Docker Deployment (Recommended)
+
+To build and run the application locally using Docker:
+
+```bash
+# Build the image
+docker build -t dataguard-ai .
+
+# Run the container
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key_here dataguard-ai
 ```
 
 ---
 
-## 🔒 Security & Privacy Notes
+## 🔮 Future Improvements
 
-* **Local processing by default**: All parsing, text extraction, validation, and redaction are performed locally on your device.
-* **API Isolation**: The only data transmitted externally is the local chunk data matching your direct Q&A queries to the Groq API (no raw file text is sent).
-* **PII Leakage Prevention**: AI system prompts restrict the LLM from outputting unmasked personal details. Even if the RAG context contains raw PII, the engine enforces compliance fallback masking in its responses.
-
----
-
-
+1. **Role-Based Access Control (RBAC)**: Support multiple users, teams, and departments with customizable data access layers.
+2. **Multi-language OCR Support**: Integrate advanced cloud vision OCR APIs (e.g., AWS Textract, Google Document AI) to read handwritten and regional language documents.
+3. **Native PDF Redaction**: Transition from text-masking output to PDF-native layer removal to support secure PDF downloads.
+4. **Persistent Vector Storage**: Swap out in-memory ChromaDB instances for a persistent, centralized vector store (e.g. Qdrant or Pinecone).
+5. **Real-time API Scanning**: Expose high-throughput REST webhook endpoints to allow CI/CD pipelines to scan code repositories for secret keys and credentials.
 
 ---
 
 <div align="center">
+Developed by <strong>Rishik Royal Upparapalli</strong> for the Proteccio Data Innovation Internship Challenge (July 2026)
 </div>
