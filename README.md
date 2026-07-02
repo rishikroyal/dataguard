@@ -105,6 +105,10 @@ For secure Q&A over uploaded files, we build a local vector database:
 * **The Problem**: ChromaDB's telemetry pipeline had a method signature mismatch with the system's updated `posthog` package, triggering noisy console logs during startup.
 * **The Solution**: Disabled telemetry at the ChromaDB initialization layer using configuration settings (`Settings(anonymized_telemetry=False)`), improving startup speed and silencing console errors.
 
+### 4. Processing Scanned PDFs and Non-Selectable Image Files
+* **The Problem**: A significant number of corporate compliance files are scanned PDF images (e.g. JPGs wrapped inside a PDF envelope) containing no indexable text, causing native text extractors to return empty results.
+* **The Solution**: Designed an automated fallback pipeline. When a document yields zero characters during native extraction, the system automatically converts the PDF pages into high-resolution images in-memory and executes Tesseract OCR. Additionally, the code dynamically auto-detects Tesseract binary paths across Windows environment defaults (`C:\Program Files\Tesseract-OCR\tesseract.exe`) and Linux environments, ensuring cross-platform container build portability.
+
 ---
 
 ## 🚀 Setup Instructions
