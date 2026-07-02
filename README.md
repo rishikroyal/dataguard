@@ -204,5 +204,4 @@ MIT License — see [LICENSE](LICENSE) for details.
 ---
 
 <div align="center">
-Built with ❤️ for the Proteccio Data AI Innovation Internship · July 2026
 </div>
