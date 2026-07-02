@@ -3,7 +3,6 @@
 # ⚔️ DataGuard AI
 ### Sensitive Data Detection & Compliance Assistant
 
-*Built for the Proteccio Data AI Innovation Internship Challenge*
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688?logo=fastapi)](https://fastapi.tiangolo.com)
