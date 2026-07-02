@@ -39,7 +39,7 @@ class RAGEngine:
             from chromadb.config import Settings
 
             # Use in-memory for simplicity; persistent optionally
-            self._client = chromadb.Client()
+            self._client = chromadb.Client(Settings(anonymized_telemetry=False))
             self.is_available = True
             logger.info("ChromaDB initialized (in-memory mode).")
         except ImportError:
