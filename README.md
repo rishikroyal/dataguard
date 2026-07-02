@@ -117,6 +117,26 @@ docker run -p 8000:8000 -e GROQ_API_KEY=gsk_key dataguard-ai
 
 ---
 
+### 🌐 Deploying to Render (Recommended)
+
+Since this project already contains a configured `Dockerfile` that automatically handles Tesseract OCR and system libraries, deploying via **Docker** on [Render](https://render.com/) is the easiest and most reliable method:
+
+1. **Push your code** to your GitHub repository (e.g. `https://github.com/rishikroyal/dataguard`).
+2. **Log in to Render** and click **New +** -> **Web Service**.
+3. **Connect your repository** from GitHub.
+4. **Configure Settings**:
+   * **Name**: `dataguard-ai`
+   * **Runtime**: Select **Docker** (Render will automatically detect the `Dockerfile` in the root).
+   * **Instance Type**: **Free** (or any tier).
+5. **Add Environment Variables**:
+   * Click on the **Advanced** section.
+   * Add a new environment variable:
+     * Key: `GROQ_API_KEY`
+     * Value: `gsk_your_actual_groq_key_here`
+6. Click **Deploy Web Service**. Render will build the container, install system dependencies, and deploy the application on a public URL.
+
+---
+
 ## 🏗️ Architecture Overview
 
 ```
