@@ -8,7 +8,6 @@ const state = {
   documents: [],          // Summaries of all analyzed documents
   currentDocId: null,      // Currently selected document ID
   currentDocDetails: null, // Full details (detections, risk profile) of active doc
-  apiKey: localStorage.getItem('dataguard_api_key') || '',
   qaHistory: {},          // { docId: [ { role, text, timestamp } ] }
   activePage: 'home',
   auditLogs: [],
@@ -26,17 +25,8 @@ const RISK_THEMES = {
 
 // ── Initial Setup ─────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Bind API Key Input
-  const keyInput = document.getElementById('api-key-input');
-  if (keyInput) {
-    keyInput.value = state.apiKey;
-    updateAIStatus(state.apiKey);
-    keyInput.addEventListener('input', (e) => {
-      state.apiKey = e.target.value.trim();
-      localStorage.setItem('dataguard_api_key', state.apiKey);
-      updateAIStatus(state.apiKey);
-    });
-  }
+  // Check API health and AI status from backend
+  checkBackendAIStatus();
 
   // Handle SPA Hash Routing
   window.addEventListener('hashchange', handleRouting);
@@ -72,14 +62,24 @@ function navigate(pageId) {
   refreshActivePage();
 }
 
-function updateAIStatus(key) {
+async function checkBackendAIStatus() {
   const statusEl = document.getElementById('ai-status');
-  if (statusEl) {
-    if (key) {
-      statusEl.textContent = 'AI: active';
-      statusEl.className = 'ai-status online';
+  try {
+    const res = await window.api.checkHealth();
+    if (res.ai_available) {
+      if (statusEl) {
+        statusEl.textContent = 'AI: online';
+        statusEl.className = 'ai-status online';
+      }
     } else {
-      statusEl.textContent = 'AI: offline';
+      if (statusEl) {
+        statusEl.textContent = 'AI: offline';
+        statusEl.className = 'ai-status offline';
+      }
+    }
+  } catch (err) {
+    if (statusEl) {
+      statusEl.textContent = 'AI: connection error';
       statusEl.className = 'ai-status offline';
     }
   }
@@ -194,11 +194,7 @@ async function handleFileUpload(file) {
   try {
     const useOcr = document.getElementById('use-ocr')?.checked || false;
     
-    // Simulate progression steps
-    setTimeout(() => { fillEl.style.width = '50%'; labelEl.textContent = 'Running pattern detection...'; }, 1000);
-    setTimeout(() => { fillEl.style.width = '75%'; labelEl.textContent = 'Classifying risk profiles...'; }, 2200);
-
-    const docResult = await window.api.uploadDocument(file, useOcr, state.apiKey);
+    const docResult = await window.api.uploadDocument(file, useOcr);
     
     fillEl.style.width = '100%';
     labelEl.textContent = 'Complete.';
@@ -787,7 +783,7 @@ async function submitQuestion(question) {
   renderQAPage();
 
   try {
-    const res = await window.api.askQuestion(docId, question, state.apiKey);
+    const res = await window.api.askQuestion(docId, question);
     state.qaHistory[docId].push({
       role: 'assistant',
       text: res.answer,
@@ -797,7 +793,7 @@ async function submitQuestion(question) {
   } catch (err) {
     state.qaHistory[docId].push({
       role: 'assistant',
-      text: 'Error processing query. Make sure Groq is available or check key.',
+      text: 'Error processing query. Verify that the backend server is configured with GROQ_API_KEY.',
       timestamp
     });
     renderQAPage();
@@ -911,12 +907,12 @@ async function triggerReportGeneration() {
   }
 
   try {
-    const res = await window.api.generateReport(state.currentDocId, state.apiKey);
+    const res = await window.api.generateReport(state.currentDocId);
     activeReportText = res.report;
     renderReportsPage();
     showToast('AI report successfully compiled.');
   } catch (err) {
-    showToast('Failed to generate compliance report. Check API Key.', true);
+    showToast('Failed to generate compliance report. Verify backend server is configured with GROQ_API_KEY.', true);
     if (btn) {
       btn.disabled = false;
       btn.textContent = 'Generate AI compliance summary';

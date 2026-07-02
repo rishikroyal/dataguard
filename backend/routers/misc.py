@@ -34,10 +34,14 @@ def _audit():
 
 @router.get("/health")
 def health():
+    from core.ai_engine import AIEngine
+    ai = AIEngine()
     return {
         "status":    "ok",
         "timestamp": datetime.now().isoformat(),
         "version":   "1.0.0",
+        "ai_available": ai.is_available,
+        "model_name": ai.model_name,
     }
 
 

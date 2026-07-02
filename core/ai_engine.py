@@ -21,7 +21,7 @@ class AIEngine:
     """
 
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.getenv("GROQ_API_KEY", "")
+        self.api_key = os.getenv("GROQ_API_KEY", "")
         self.client = None
         self.model_name = "llama-3.1-8b-instant"
         self.is_available = False
