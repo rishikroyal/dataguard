@@ -7,6 +7,7 @@
 
 ---
 
+
 ## 📌 Executive Summary
 
 **DataGuard AI** is a secure, high-performance web application designed to scan enterprise documents, identify sensitive information (PII, Financials, Credentials), map compliance violations to regulatory frameworks (India DPDP Act 2023 & EU GDPR), and facilitate secure, context-grounded Q&A over the documents without leaking confidential details.
